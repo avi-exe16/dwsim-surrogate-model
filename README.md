@@ -76,47 +76,48 @@ Develop a machine learning surrogate model for a binary distillation column that
 ---
 
 ## Repository Structure
+
+```
 dwsim-surrogate-model/
-│
-├── DWSIM_Column.dwsim.dwxmz          DWSIM flowsheet file
-├── Results_Summary.txt               Model results and metrics
-├── Results_Summary_Predictions.csv   Sample predictions vs actual values
-│
+├── DWSIM_Column.dwsim.dwxmz               DWSIM flowsheet file
+├── Results_Summary.txt                    Model results and metrics
+├── Results_Summary_Predictions.csv        Sample predictions vs actual
 ├── Code/
-│   ├── 01_data_generation.py         DWSIM automation and dataset generation
-│   └── 02_model_training.py          ML model training, evaluation and plots
-│
+│   ├── 01_data_generation.py              DWSIM automation script
+│   └── 02_model_training.py               ML training pipeline
 ├── Dataset/
-│   └── distillation_dataset.csv      Generated simulation dataset (2923 rows)
-│
+│   └── distillation_dataset.csv           Generated dataset (2923 rows)
 ├── Models/
-│   ├── best_model.pkl                Gradient Boosting (best model)
-│   ├── linear_regression_model.pkl   Linear Regression model
-│   └── scaler.pkl                    StandardScaler for input preprocessing
-│
+│   ├── best_model.pkl                     Gradient Boosting (best model)
+│   ├── linear_regression_model.pkl        Linear Regression model
+│   └── scaler.pkl                         StandardScaler
 └── Plots/
-├── distributions.png             Input and output distributions
-├── correlation.png               Correlation matrix
-├── model_comparison.png          R2 comparison across all models
-├── r2_heatmap.png                R2 per model per output
-├── predicted_vs_actual.png       Predicted vs actual (best model)
-├── feature_importance.png        Feature importance bar chart
-├── feature_importance_heatmap.png Feature importance per output
-├── physical_consistency.png      Output trends vs key inputs
-└── learning_curve.png            Learning curve for overfitting check
+    ├── distributions.png
+    ├── correlation.png
+    ├── model_comparison.png
+    ├── r2_heatmap.png
+    ├── predicted_vs_actual.png
+    ├── feature_importance.png
+    ├── feature_importance_heatmap.png
+    ├── physical_consistency.png
+    └── learning_curve.png
+```
 
 ---
 
 ## How to Run
 
 ### 1. Setup Environment
+
+```
 conda create -n dwsim_env python=3.12
 conda activate dwsim_env
 pip install pandas numpy scikit-learn xgboost joblib seaborn matplotlib pythonnet
+```
 
 ### 2. Generate Dataset
 - Install DWSIM from https://dwsim.org
-- Open `DWSIM_Column.dwsim.dwxmz` in DWSIM and verify it solves with 0 errors
+- Open `DWSIM_Column.dwsim.dwxmz` and verify it solves with 0 errors
 - Close DWSIM completely before running the script
 - Run `Code/01_data_generation.py` using the DWSIM Python 3.12 kernel
 
@@ -124,14 +125,13 @@ pip install pandas numpy scikit-learn xgboost joblib seaborn matplotlib pythonne
 - Run `Code/02_model_training.py` using standard Python 3 kernel
 - All plots, models, and results are saved automatically
 
-### 4. Make a Prediction Using the Saved Model
+### 4. Make a Prediction
+
 ```python
 import joblib
 import numpy as np
 
 model = joblib.load('Models/best_model.pkl')
-
-# [T_feed_K, xF_benzene, N_stages, feed_stage, reflux_ratio, bottoms_flow_mols]
 inputs = np.array([[365.0, 0.5, 15, 7, 2.5, 50.0]])
 pred = model.predict(inputs)
 
@@ -146,6 +146,6 @@ print("QR_kW     :", round(pred[0, 3], 4))
 ## Notes
 
 - DWSIM must be fully closed before running the data generation script
-- Data generation script runs on DWSIM Python 3.12 kernel
-- Model training script runs on standard Python 3 kernel
-- Large model files (Random Forest, XGBoost, SVM, Neural Network) are excluded from this repository due to GitHub file size limits but are generated automatically when the training script is run
+- Data generation runs on DWSIM Python 3.12 kernel
+- Model training runs on standard Python 3 kernel
+- Large model files are excluded due to GitHub file size limits but are generated automatically when the training script is run
